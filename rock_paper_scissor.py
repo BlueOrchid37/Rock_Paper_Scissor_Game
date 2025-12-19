@@ -1,61 +1,75 @@
-#Rock Paper Scissor Game
-
 import random
-choiceList=["rock", "paper", "scissor"]
-while True:
-    comCount=0
-    userCount=0
-    userChoice=int(input('''
-    Play Game?
-    1. Yes |Play
-    2. No  |Exit
-    '''))
-    if userChoice==1:
-        for i in range(1,6):
-            userInput=int(input('''
-            Enter your Choice:
-            1. Rock
-            2. Paper
-            3. Scissor
-            '''))
-            if userInput==1:
-                userValue="rock"
-            elif userInput==2:
-                userValue="paper"
-            elif userInput==3:
-                userValue="scissor"
-            else:
-                print("Invalid Input")
-            systemChoice=random.choice(choiceList)
-            if(userValue=="rock" and systemChoice=="rock") or (userValue=="paper" and systemChoice=="paper") or (userValue=="scissor" and systemChoice=="scissor"):
-                print("Your Choice: ", userValue)
-                print("Computer Choice: ", systemChoice)
-                print("Tie")
-                userCount=userCount+1
-                comCount=comCount+1
-            elif(userValue=="rock" and systemChoice=="scissor") or (userValue=="paper" and systemChoice=="rock") or (userValue=="scissor" and systemChoice=="paper"):
-                print("Your Choice: ", userValue)
-                print("Computer Choice: ", systemChoice)
-                print("You Won")
-                userCount=userCount+1
-            else:
-                print("Your Choice: ", userValue)
-                print("Computer Choice: ", systemChoice)
-                print("Computer Won")
-                comCount=comCount+1
 
-            
-        if userCount==comCount:
-                print("Computer Score: ", comCount)
-                print("Your Score: ", userCount)
-                print("Series Draw")
-        elif userCount>comCount:
-                print("Computer Score: ", comCount)
-                print("Your Score: ", userCount)
-                print("You Won")
+CHOICES = ["rock", "paper", "scissor"]
+
+
+def get_user_choice():
+    choice = int(input("\n1 Rock\n2 Paper\n3 Scissor\nChoose: "))
+    if choice in [1, 2, 3]:
+        return CHOICES[choice - 1]
+    print("Invalid input")
+    return None
+
+
+def decide_winner(user, computer):
+    if user == computer:
+        return "tie"
+    if (user == "rock" and computer == "scissor") or \
+       (user == "paper" and computer == "rock") or \
+       (user == "scissor" and computer == "paper"):
+        return "user"
+    return "computer"
+
+
+def play_series(rounds=5):
+    user_score = 0
+    computer_score = 0
+
+    for _ in range(rounds):
+        user_choice = get_user_choice()
+        if not user_choice:
+            continue
+
+        computer_choice = random.choice(CHOICES)
+        print("Your Choice:", user_choice)
+        print("Computer Choice:", computer_choice)
+
+        result = decide_winner(user_choice, computer_choice)
+
+        if result == "user":
+            print("You won this round\n")
+            user_score += 1
+        elif result == "computer":
+            print("Computer won this round\n")
+            computer_score += 1
         else:
-                print("Computer Score: ", comCount)
-                print("Your Score: ", userCount)
-                print("Computer Won")
-    else:
-        break
+            print("Round tied\n")
+            user_score += 1
+            computer_score += 1
+
+    return user_score, computer_score
+
+
+def main():
+    while True:
+        play = int(input("\n1 Play Game\n2 Exit\nChoose: "))
+        if play != 1:
+            print("Exit")
+            break
+
+        user, computer = play_series()
+
+        print("\nFinal Score")
+        print("You:", user)
+        print("Computer:", computer)
+
+        if user > computer:
+            print("You won the series!")
+        elif computer > user:
+            print("Computer won the series!")
+        else:
+            print("Series Draw!")
+
+
+if __name__ == "__main__":
+    main()
